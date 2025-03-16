@@ -1,3 +1,6 @@
+#generated msgs
+src/main/java/generated/
+
 # Compiled class files
 *.class
 *.jar
