@@ -1,0 +1,60 @@
+# Compiled class files
+*.class
+*.jar
+*.war
+*.ear
+
+# Log files
+*.log
+
+# IntelliJ IDEA project files
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Gradle build files
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar  # Keep Gradle wrapper
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*.bak
+.DS_Store
+
+# OS-specific files
+Thumbs.db
+Desktop.ini
+
+# JetBrains Cache & Index files
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/shelf/
+
+# Lombok cache
+.lombok/
+
+# Coverage reports
+*.lcov
+coverage/
+
+# JUnit reports
+test-results/
+test-output/
+
+# SonarQube
+.sonar/
+
+# Maven (if used)
+.mvn/
+target/
+
+# Node (if frontend is included)
+node_modules/
+dist/
+

@@ -1,0 +1,81 @@
+plugins {
+    id 'java'
+}
+
+group 'org.sokei'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.6.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.16.1'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.16.1'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.16.1'
+    implementation 'io.aeron:aeron-all:1.41.1'
+    implementation 'org.agrona:agrona:1.21.1'
+    implementation 'uk.co.real-logic:sbe-tool:1.31.0'
+    implementation 'org.apache.httpcomponents.client5:httpclient5-fluent:5.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+configurations {
+    sbeToolClasspath {
+        extendsFrom implementation
+        canBeResolved = true
+        canBeConsumed = false
+    }
+}
+
+task generateSbeCode {
+    description = 'Generates Java code from SBE schema(s) using the sbe-tool.'
+    group = 'generation'
+
+    inputs.files fileTree('src/main/resources/').include('*.xml')
+    outputs.dir file('src/main/java/generated') // Adjust output directory as needed
+
+    doLast {
+        def schemaFiles = fileTree('src/main/resources/').include('*.xml').files
+        def outputDir = file('src/main/java/generated')
+        def argsList = []
+        schemaFiles.each { schemaFile ->
+            println "Adding schema file: ${schemaFile.absolutePath}"
+            argsList += [schemaFile.absolutePath]
+        }
+        def standardOutput = new ByteArrayOutputStream()
+        def errorOutput = new ByteArrayOutputStream()
+
+        if (!outputDir.exists()) {
+            outputDir.mkdirs()
+        }
+
+        javaexec {
+            mainClass = 'uk.co.real_logic.sbe.SbeTool'
+            classpath = configurations.sbeToolClasspath
+            jvmArgs = ['-Djava.class.path=' + configurations.sbeToolClasspath.asPath]
+            systemProperties('sbe.output.dir': outputDir,
+                    'sbe.target.language': 'Java',
+                    'sbe.validation.stop.on.error': 'true')
+            args = argsList
+            println args
+            standardOutput = standardOutput
+            errorOutput = errorOutput
+        }
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs += 'src/main/java/generated' // Include generated code in source set
+        }
+    }
+}
+
+
+test {
+    useJUnitPlatform()
+}

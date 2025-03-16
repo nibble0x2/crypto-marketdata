@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<sbe:messageSchema xmlns:sbe="http://fixprotocol.io/2016/sbe"
+                   package="org.marketdata.sbe"
+                   id="688"
+                   version="1"
+                   semanticVersion="0.1"
+                   description="Sample SBE Messages"
+                   byteOrder="littleEndian">
+    <types>
+        <composite name="messageHeader" description="Message identifiers and length of message root">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="templateId" primitiveType="uint16"/>
+            <type name="schemaId" primitiveType="uint16"/>
+            <type name="version" primitiveType="uint16"/>
+        </composite>
+        <composite name="varStringEncoding">
+            <type name="length" primitiveType="uint32" maxValue="1073741824"/>
+            <type name="varData" primitiveType="uint8" length="0" characterEncoding="UTF-8"/>
+        </composite>
+        <composite name="groupSizeEncoding" description="Repeating group dimensions.">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="numInGroup" primitiveType="uint16"/>
+        </composite>
+        <type name="Price" primitiveType="int64">
+            <enum name="exponent" type="int8">
+                <value name="e-8" value="-8"/>
+            </enum>
+        </type>
+        <type name="Quantity" primitiveType="int64">
+            <enum name="exponent" type="int8">
+                <value name="e-8" value="-8"/>
+            </enum>
+        </type>
+        <type name="Sequence" primitiveType="int64"/>
+        <type name="Timestamp" primitiveType="int64"/>
+        <type name="Symbol" primitiveType="char" length="20"/>
+    </types>
+
+
+    <sbe:message name="OrderbookMsg" id="2" description="Order book msg">
+        <field name="symbol" id="2" type="Symbol"/>
+        <field name="FirstUpdateId" id="3" type="uint64" description="First update ID in this event."/>
+        <field name="LastUpdateId" id="4" type="uint64" description="Last update ID in this event."/>
+        <group name="Bids" id="5" dimensionType="groupSizeEncoding">
+            <field name="Price" id="1" type="Price"/>
+            <field name="Quantity" id="2" type="Quantity"/>
+        </group>
+        <group name="Asks" id="6" dimensionType="groupSizeEncoding">
+            <field name="Price" id="1" type="Price"/>
+            <field name="Quantity" id="2" type="Quantity"/>
+        </group>
+    </sbe:message>
+    <sbe:message name="addBids" id="3" description="Bids from order book update/snapshot">
+        <group name="Bids" id="1" dimensionType="groupSizeEncoding">
+            <field name="Price" id="1" type="Price"/>
+            <field name="Quantity" id="2" type="Quantity"/>
+        </group>
+    </sbe:message>
+    <sbe:message name="addAsks" id="4" description="Asks from order book update/snapshot">
+        <group name="Asks" id="1" dimensionType="groupSizeEncoding">
+            <field name="Price" id="1" type="Price"/>
+            <field name="Quantity" id="2" type="Quantity"/>
+        </group>
+    </sbe:message>
+    <sbe:message name="printOB" id="5" description="Print Order book">
+    </sbe:message>
+</sbe:messageSchema>
