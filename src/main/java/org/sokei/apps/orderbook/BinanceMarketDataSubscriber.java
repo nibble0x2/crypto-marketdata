@@ -45,8 +45,8 @@ public class BinanceMarketDataSubscriber {
         final Iterator<OrderbookMsgDecoder.AsksDecoder> asksDecoderIterator = orderbookMsg.asks().iterator();
         while (asksDecoderIterator.hasNext()) {
             OrderbookMsgDecoder.AsksDecoder asksDecoder = asksDecoderIterator.next();
-            double askPrice = asksDecoder.price();
-            double askQuantity = asksDecoder.quantity();
+            double askPrice = asksDecoder.price() / 1e8;
+            double askQuantity = asksDecoder.quantity() / 1e8;
             orderBook.updateAsk(askPrice, askQuantity);
         }
     }
